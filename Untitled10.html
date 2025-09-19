@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My 3D Showreel</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #203F77; /* Blue background */
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background text wall */
+    .bg-wall {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .bg-row {
+      display: flex;
+      white-space: nowrap;
+      font-family: 'Roboto', sans-serif;
+      font-size: 60px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.15);
+      gap: 80px; /* Small gaps between words */
+      animation: scrollLeft 10s linear infinite;
+    }
+    .bg-row.right {
+      animation: scrollRight 10s linear infinite;
+    }
+    @keyframes scrollLeft {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    @keyframes scrollRight {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Positioning rows */
+    .bg-row:nth-child(1) { top: 10%; position: absolute; }
+    .bg-row:nth-child(2) { top: 30%; position: absolute; }
+    .bg-row:nth-child(3) { top: 50%; position: absolute; }
+    .bg-row:nth-child(4) { top: 70%; position: absolute; }
+    .bg-row:nth-child(5) { top: 90%; position: absolute; }
+
+    /* Header bar */
+    header {
+      background: #FFD700; /* Yellow bar */
+      padding: 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #000; /* Black text */
+    }
+    nav a {
+      margin: 0 15px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
+    }
+    nav a:hover {
+      color: #333;
+    }
+    .contact-btn {
+      background-color: #ff5722;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+    .contact-btn:hover {
+      background-color: #e64a19;
+    }
+
+    .container {
+      padding: 50px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .section {
+      margin: 40px 0;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      perspective: 1000px;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .section iframe:hover {
+      transform: rotateY(12deg) rotateX(6deg) scale(1.02);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
+
+    /* Shorts slider */
+    .shorts-slider {
+      position: relative;
+      overflow: hidden;
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+    .shorts-track {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+    .short-item {
+      min-width: 300px;
+      max-width: 350px;
+      margin: 0 10px;
+      flex: 0 0 auto;
+      perspective: 1000px;
+    }
+    .short-item iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .short-item iframe:hover {
+      transform: rotateY(-10deg) rotateX(5deg) scale(1.03);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+    }
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: yellow;
+      color: black;
+      font-size: 40px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      border-radius: 50%;
+      z-index: 20;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+    .slide-arrow.left { left: 10px; }
+    .slide-arrow.right { right: 10px; }
+    .catchphrase {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    /* Popup Styles */
+    .about-popup, .contact-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #fff;
+      color: #333;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    .about-popup.show, .contact-popup.show { display: block; }
+    .close-btn {
+      display: block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #ff5722;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    footer {
+      background-color: #111;
+      padding: 20px 50px;
+      color: #ddd;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Text Wall -->
+  <div class="bg-wall">
+    <div class="bg-row">Premiere Pro After Effects DaVinci Resolve ChatGPT</div>
+    <div class="bg-row right">Premiere Pro After Effects DaVinci Resolve ChatGPT</div>
+    <div class="bg-row">Premiere Pro After Effects DaVinci Resolve ChatGPT</div>
+    <div class="bg-row right">Premiere Pro After Effects DaVinci Resolve ChatGPT</div>
+    <div class="bg-row">Premiere Pro After Effects DaVinci Resolve ChatGPT</div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">My Showreel</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#" onclick="showAboutPopup()">About</a>
+      <a href="#" onclick="showContactPopup()" class="contact-btn">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Videos -->
+    <div class="section"><h2>Intro Video</h2><iframe src="https://www.youtube.com/embed/3wPbe6bO5-0?si=W5t3TU2iJT7WicTz" allowfullscreen></iframe></div>
+    <div class="section"><h2>Documentary Video</h2><iframe src="https://www.youtube.com/embed/4MP2HKvVp_E" allowfullscreen></iframe></div>
+    <div class="section"><h2>Educational Video</h2><iframe src="https://www.youtube.com/embed/VRKAECiffsk" allowfullscreen></iframe></div>
+    <div class="section"><h2>AI Creative Video</h2><iframe src="https://www.youtube.com/embed/PkS1roOuGQk" allowfullscreen></iframe></div>
+    <div class="section"><h2>Animation Video</h2><iframe src="https://www.youtube.com/embed/5aHzfNsQ8aI" allowfullscreen></iframe></div>
+
+    <!-- Shorts Slider -->
+    <div class="section">
+      <h2>Reel Videos</h2>
+      <div class="shorts-slider">
+        <div class="shorts-track" id="shortsTrack">
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/l-E_5lCkZYE" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/MnSp_uXlw7A" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/XSoVC44sV3I" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/J3xBJCHw_v8" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/Ld0PM1twGRk" allowfullscreen></iframe></div>
+          <div class="short-item"><iframe src="https://www.youtube.com/embed/TVyikw8Lwps" allowfullscreen></iframe></div>
+        </div>
+        <button class="slide-arrow left" onclick="slideShorts(-1)">◀</button>
+        <button class="slide-arrow right" onclick="slideShorts(1)">▶</button>
+      </div>
+    </div>
+
+    <!-- Thumbnail -->
+    <div class="section"><h2>Thumbnail Design</h2><iframe src="https://www.youtube.com/embed/VUP3jTY5igs" allowfullscreen></iframe></div>
+    <div class="section"><p class="catchphrase">"Your Content Deserves the Best Editor. Let's Get Started!"</p><a href="#" onclick="showContactPopup()" class="contact-btn">Contact Now</a></div>
+  </div>
+
+  <!-- Popups -->
+  <div class="about-popup" id="aboutPopup">
+    <p>As a skilled freelance video editor with over three years of experience, I specialize in transforming your raw footage into polished, engaging videos. With expertise in Adobe Premiere Pro, After Effects, Photoshop, and other AI tools, I bring a comprehensive approach to video editing. Whether you need dynamic motion graphics, seamless transitions, or meticulous color correction, I deliver high-quality results quickly and efficiently. Let me help you make your vision come to life with videos that captivate and impress your audience.</p>
+    <button class="close-btn" onclick="closeAboutPopup()">Close</button>
+  </div>
+  <div class="contact-popup" id="contactPopup">
+    <p>Email: <strong>subhamaysarkar486@gmail.com</strong></p>
+    <button onclick="copyEmail()" class="close-btn">Copy Email</button>
+    <button onclick="closeContactPopup()" class="close-btn">Close</button>
+  </div>
+
+  <footer><div class="copyright">© 2025 Your Company. All Rights Reserved.</div></footer>
+
+  <script>
+    // Popups
+    function showAboutPopup(){document.getElementById('aboutPopup').classList.add('show');}
+    function closeAboutPopup(){document.getElementById('aboutPopup').classList.remove('show');}
+    function showContactPopup(){document.getElementById('contactPopup').classList.add('show');}
+    function closeContactPopup(){document.getElementById('contactPopup').classList.remove('show');}
+    function copyEmail(){navigator.clipboard.writeText('subhamaysarkar486@gmail.com');alert('Email copied to clipboard!');}
+
+    // Scroll reveal
+    const sections=document.querySelectorAll('.section');
+    function revealSections(){const h=window.innerHeight*0.8;sections.forEach(s=>{if(s.getBoundingClientRect().top<h){s.classList.add('visible')}})}
+    window.addEventListener('scroll',revealSections);window.addEventListener('load',revealSections);
+
+    // Shorts slider
+    let shortIndex=0;
+    function slideShorts(d){const t=document.getElementById('shortsTrack');const items=t.querySelectorAll('.short-item');const w=items[0].offsetWidth+20;const v=3;const max=items.length-v;shortIndex+=d;if(shortIndex<0)shortIndex=0;if(shortIndex>max)shortIndex=max;t.style.transform=`translateX(${-shortIndex*w}px)`;}
+  </script>
+</body>
+</html>
